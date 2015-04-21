@@ -10,25 +10,11 @@ static GFont s_date_font;
 static BitmapLayer *s_background_layer;
 static GBitmap *s_background_bitmap;
 
-static void update_date() {
-  // Get a tm structure
-  time_t temp = time(NULL); 
-  struct tm *tick_time = localtime(&temp);
-  
-  static char dateText[25];
-  
-  strftime(dateText, 25, "%A, %b. %e", tick_time);
-  
-  text_layer_set_text(s_date_layer, dateText);
-}
-
 static void update_time() {
   // Get a tm structure
   time_t temp = time(NULL); 
   struct tm *tick_time = localtime(&temp);
   
-  update_date();
-
   // Create a long-lived buffer
   static char buffer[] = "00:00";
 
@@ -61,6 +47,24 @@ static void update_time() {
 
   // Display this time on the TextLayer
   text_layer_set_text(s_time_layer, buffer);
+  
+  // display the am/pm state
+  char* ampm;
+  
+  if(tick_time->tm_hour < 12) {
+    ampm = "am";
+  } else {
+    ampm = "pm";
+  }
+  
+  text_layer_set_text(s_ampm_layer, ampm);
+  
+  // now update the date
+  char dateText[25];
+  
+  strftime(dateText, 25, "%A, %b. %e", tick_time);
+  
+  text_layer_set_text(s_date_layer, dateText);
 }
 
 static void main_window_load(Window *window) {
