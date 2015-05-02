@@ -1,149 +1,156 @@
-#include <main.h>
-  
-static Window *s_main_window;
-static TextLayer *s_time_layer;
-static TextLayer *s_date_layer;
-static TextLayer *s_ampm_layer;
+#include <pebble.h>
+#include "messaging.c"
 
-static GFont s_time_font;
-static GFont s_date_font;
-static BitmapLayer *s_background_layer;
-static GBitmap *s_background_bitmap;
+#define FORCE_BACKLIGHT
+#define FORCE_12H true
+#define TIME_STR_LEN 6
+#define AMPM_STR_LEN 9
+#define DATE_STR_LEN 25
 
-static void update_time() {
-  // Get a tm structure
-  time_t temp = time(NULL); 
-  struct tm *tick_time = localtime(&temp);
-  
-  // Create a long-lived buffer
-  static char buffer[] = "00:00";
+// windows and layers
+static Window *mainWindow;
+static TextLayer *timeLayer;
+static TextLayer *dateLayer;
+static TextLayer *ampmLayer;
+static BitmapLayer *bgLayer;
 
-  // Write the current hours and minutes into the buffer
-  if(clock_is_24h_style() == true && !FORCE_12H) {
-    //Use 24h hour format
-    strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);
+// fonts
+static GFont timeFont;
+static GFont dateFont;
+
+// images
+static GBitmap *bgBitmap;
+
+// long-lived strings
+static char timeText[TIME_STR_LEN];
+static char ampmText[AMPM_STR_LEN];
+static char dateText[DATE_STR_LEN]; 
+
+static void update_clock() {
+  time_t rawTime;
+  struct tm * timeInfo;
+
+  time(&rawTime);
+  timeInfo = localtime(&rawTime);
+
+  // set time string
+  if(clock_is_24h_style() && !FORCE_12H) {
+    // use 24 hour format
+    strftime(timeText, TIME_STR_LEN, "%H:%M", timeInfo);
   } else {
-    //Use 12 hour format
-    strftime(buffer, sizeof("00:00"), "%I:%M", tick_time);
+    // use 12 hour format
+    strftime(timeText, TIME_STR_LEN, "%I:%M", timeInfo);
   }
-  
+    
   //now trim leading 0's
-  if(buffer[0] == '0') {
-    int bufferMaxIndex = (int)sizeof(buffer) - 1;
-    
+  if(timeText[0] == '0') {
     //shuffle everyone back by 1
-    for(int i = 0; i < bufferMaxIndex; i++) {
-      buffer[i] = buffer[i + 1];
+    for(int i = 0; i < TIME_STR_LEN; i++) {
+      timeText[i] = timeText[i + 1];
     }
-    
-    buffer[bufferMaxIndex] = ' ';
-    
+        
     // move the ampm layer to adjust for the smaller text
-    layer_set_frame(text_layer_get_layer(s_ampm_layer), GRect(96, 57, 30, 20));
+    layer_set_frame(text_layer_get_layer(ampmLayer), GRect(96, 58, 70, 20));
   } else {
     // adjust the position of the am/pm layer
-    layer_set_frame(text_layer_get_layer(s_ampm_layer), GRect(118, 57, 30, 20));
+    layer_set_frame(text_layer_get_layer(ampmLayer), GRect(118, 58, 70, 20));
   }
 
-  // Display this time on the TextLayer
-  text_layer_set_text(s_time_layer, buffer);
+  // display this time on the TextLayer
+  text_layer_set_text(timeLayer, timeText);
   
   // display the am/pm state
-  char* ampm;
-  
-  if(tick_time->tm_hour < 12) {
-    ampm = "am";
+  if(timeInfo->tm_hour == 0 && timeInfo->tm_min == 0) {
+    strncpy(ampmText, "midnight", AMPM_STR_LEN);
+  } else if(timeInfo->tm_hour == 12 && timeInfo->tm_min == 0) {
+    strncpy(ampmText, "noon", AMPM_STR_LEN);
+  } else if(timeInfo->tm_hour < 12) {
+    strncpy(ampmText, "am", AMPM_STR_LEN);
   } else {
-    ampm = "pm";
+    strncpy(ampmText, "pm", AMPM_STR_LEN);
   }
   
-  text_layer_set_text(s_ampm_layer, ampm);
+  text_layer_set_text(ampmLayer, ampmText);
   
-  // now update the date
-  char dateText[25];
-  
-  strftime(dateText, 25, "%A, %b. %e", tick_time);
-  
-  text_layer_set_text(s_date_layer, dateText);
+  // display the date
+  strftime(dateText, DATE_STR_LEN, "%A, %b. %e", timeInfo);
+  text_layer_set_text(dateLayer, dateText);
 }
 
 static void main_window_load(Window *window) {
   //Create GBitmap, then set to created BitmapLayer
-  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BG4_AFTERNOON);
-  s_background_layer = bitmap_layer_create(GRect(0, 0, 144, 168));
-  bitmap_layer_set_bitmap(s_background_layer, s_background_bitmap);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_background_layer));
+  bgBitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BG6_TWILIGHT);
+  bgLayer = bitmap_layer_create(GRect(0, 0, 144, 168));
+  bitmap_layer_set_bitmap(bgLayer, bgBitmap);
+  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(bgLayer));
+  
+  // create fonts
+  timeFont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LATO_38));
+  dateFont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LATO_14));
   
   // Create time TextLayer
-  s_time_layer = text_layer_create(GRect(18, 34, 130, 50));
-  text_layer_set_background_color(s_time_layer, GColorClear);
-  text_layer_set_text_color(s_time_layer, GColorBlack);
-  text_layer_set_text(s_time_layer, "00:00");
+  timeLayer = text_layer_create(GRect(18, 34, 130, 50));
+  text_layer_set_background_color(timeLayer, GColorClear);
+  text_layer_set_text_color(timeLayer, GColorBlack);
+  text_layer_set_font(timeLayer, timeFont);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(timeLayer));
   
   // Create date TextLayer
-  s_date_layer = text_layer_create(GRect(18, 22, 130, 20));
-  text_layer_set_background_color(s_date_layer, GColorClear);
-  text_layer_set_text_color(s_date_layer, GColorDarkGray);
-  text_layer_set_text(s_date_layer, "Monday, Sept. 31");
+  dateLayer = text_layer_create(GRect(18, 22, 130, 20));
+  text_layer_set_background_color(dateLayer, GColorClear);
+  text_layer_set_text_color(dateLayer, GColorDarkGray);
+  text_layer_set_font(dateLayer, dateFont);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(dateLayer));
   
   // Create ampm TextLayer
-  s_ampm_layer = text_layer_create(GRect(96, 57, 30, 20));
-  text_layer_set_background_color(s_ampm_layer, GColorClear);
-//   text_layer_set_background_color(s_ampm_layer, GColorRed);
-  text_layer_set_text_color(s_ampm_layer, GColorBlack);
-  text_layer_set_text(s_ampm_layer, "pm");
-  
-  //Create GFont
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LATO_38));
-  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LATO_14));
-
-  //Apply to TextLayer
-  text_layer_set_font(s_time_layer, s_time_font);
-  text_layer_set_text_alignment(s_time_layer, GTextAlignmentLeft);
-  text_layer_set_font(s_date_layer, s_date_font);
-  text_layer_set_text_alignment(s_date_layer, GTextAlignmentLeft);
-  text_layer_set_font(s_ampm_layer, s_date_font);
-  text_layer_set_text_alignment(s_ampm_layer, GTextAlignmentLeft);
-
-  // Add it as a child layer to the Window's root layer
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_ampm_layer));
+  ampmLayer = text_layer_create(GRect(96, 57, 60, 20));
+  text_layer_set_background_color(ampmLayer, GColorClear);
+  text_layer_set_text_color(ampmLayer, GColorBlack);
+  text_layer_set_font(ampmLayer, dateFont);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(ampmLayer));
   
   // Make sure the time is displayed from the start
-  update_time();
+  update_clock();
 }
 
 static void main_window_unload(Window *window) {
   //Unload GFont
-  fonts_unload_custom_font(s_time_font);
+  fonts_unload_custom_font(timeFont);
   
   //Destroy GBitmap
-  gbitmap_destroy(s_background_bitmap);
+  gbitmap_destroy(bgBitmap);
 
   //Destroy BitmapLayer
-  bitmap_layer_destroy(s_background_layer);
+  bitmap_layer_destroy(bgLayer);
   
   // Destroy TextLayer
-  text_layer_destroy(s_time_layer);
+  text_layer_destroy(timeLayer);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-  update_time();
+  update_clock();
 }
+
   
 static void init() {
+  #ifdef FORCE_BACKLIGHT
+  light_enable(true);
+  #endif
+    
+  // init the messaging thing
+  messaging_init();
+  
   // Create main Window element and assign to pointer
-  s_main_window = window_create();
+  mainWindow = window_create();
 
   // Set handlers to manage the elements inside the Window
-  window_set_window_handlers(s_main_window, (WindowHandlers) {
+  window_set_window_handlers(mainWindow, (WindowHandlers) {
     .load = main_window_load,
     .unload = main_window_unload
   });
 
   // Show the Window on the watch, with animated=true
-  window_stack_push(s_main_window, true);
+  window_stack_push(mainWindow, true);
   
   // Register with TickTimerService
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
@@ -151,7 +158,7 @@ static void init() {
 
 static void deinit() {
   // Destroy Window
-  window_destroy(s_main_window);
+  window_destroy(mainWindow);
 }
 
 int main(void) {

@@ -1,7 +1,11 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "KEY_GMT_OFFSET": 2,
+        "KEY_LOCATION_LAT": 0,
+        "KEY_LOCATION_LNG": 1
+    },
     "capabilities": [
-        ""
+        "location"
     ],
     "companyName": "Freakified",
     "longName": "Pixel Billboard",
