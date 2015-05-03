@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "messaging.c"
+#include "dayparts.c"
 
 #define FORCE_BACKLIGHT
 #define FORCE_12H true
@@ -75,6 +76,9 @@ static void update_clock() {
   // display the date
   strftime(dateText, DATE_STR_LEN, "%A, %b. %e", timeInfo);
   text_layer_set_text(dateLayer, dateText);
+  
+  // TEMP let's try putting in the BG switch here:
+  //bitmap_layer_set_bitmap(bgLayer, RESOURCE_ID_IMAGE_BG0_NIGHT);
 }
 
 static void main_window_load(Window *window) {
