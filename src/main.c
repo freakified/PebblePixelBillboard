@@ -19,9 +19,6 @@ static BitmapLayer *bgLayer;
 static GFont timeFont;
 static GFont dateFont;
 
-// images
-static GBitmap *bgBitmap;
-
 // long-lived strings
 static char timeText[TIME_STR_LEN];
 static char ampmText[AMPM_STR_LEN];
@@ -33,6 +30,8 @@ static void update_clock() {
 
   time(&rawTime);
   timeInfo = localtime(&rawTime);
+  timeInfo->tm_hour = 12;
+  timeInfo->tm_min = 00;
 
   // set time string
   if(clock_is_24h_style() && !FORCE_12H) {
@@ -78,14 +77,13 @@ static void update_clock() {
   text_layer_set_text(dateLayer, dateText);
   
   // TEMP let's try putting in the BG switch here:
-  //bitmap_layer_set_bitmap(bgLayer, RESOURCE_ID_IMAGE_BG0_NIGHT);
+  GBitmap* background = getCurrentBG(timeInfo);
+  bitmap_layer_set_bitmap(bgLayer, background);
 }
 
 static void main_window_load(Window *window) {
   //Create GBitmap, then set to created BitmapLayer
-  bgBitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BG6_TWILIGHT);
   bgLayer = bitmap_layer_create(GRect(0, 0, 144, 168));
-  bitmap_layer_set_bitmap(bgLayer, bgBitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(bgLayer));
   
   // create fonts
@@ -122,7 +120,7 @@ static void main_window_unload(Window *window) {
   fonts_unload_custom_font(timeFont);
   
   //Destroy GBitmap
-  gbitmap_destroy(bgBitmap);
+//   gbitmap_destroy(bgBitmap);
 
   //Destroy BitmapLayer
   bitmap_layer_destroy(bgLayer);
@@ -140,7 +138,10 @@ static void init() {
   #ifdef FORCE_BACKLIGHT
   light_enable(true);
   #endif
-    
+  
+  // load background images
+  initDayparts();
+  
   // init the messaging thing
   messaging_init();
   
