@@ -1,6 +1,7 @@
 #include <pebble.h>
-#include "messaging.h"
 #include "location_info.h"
+#include "messaging.h"
+  
   
 static void messaging_init() {
   // Register callbacks
@@ -18,7 +19,6 @@ static void messaging_init() {
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "i got a messageQ");
   Tuple *lat_tuple = dict_find(iterator, KEY_LOCATION_LAT);
   Tuple *lng_tuple = dict_find(iterator, KEY_LOCATION_LNG);
   Tuple *tzOffset_tuple = dict_find(iterator, KEY_GMT_OFFSET);
@@ -35,7 +35,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     location.tzOffset = tzOffset_tuple->value->int32;
     locationInfoRecieved = true;
     
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "omg i guess i got the loc");
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Location recieved!");
   }
 }
 

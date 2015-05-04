@@ -13,28 +13,18 @@
     "resources": {
         "media": [
             {
-                "file": "images/billboard_bg_color0_night.png",
-                "name": "IMAGE_BG0_NIGHT",
-                "type": "png"
+                "file": "fonts/Lato-Bold.ttf",
+                "name": "FONT_LATO_14",
+                "type": "font"
             },
             {
-                "file": "images/billboard_bg_color1_morningtwilight.png",
-                "name": "IMAGE_BG1_TWILIGHT",
-                "type": "png"
+                "file": "fonts/Lato-Bold.ttf",
+                "name": "FONT_LATO_38",
+                "type": "font"
             },
             {
-                "file": "images/billboard_bg_color2_sunrise.png",
-                "name": "IMAGE_BG2_SUNRISE",
-                "type": "png"
-            },
-            {
-                "file": "images/billboard_bg_color3_midday.png",
-                "name": "IMAGE_BG3_MIDDAY",
-                "type": "png"
-            },
-            {
-                "file": "images/billboard_bg_color4_afternoon.png",
-                "name": "IMAGE_BG4_AFTERNOON",
+                "file": "images/billboard_bg_color6_twilight.png",
+                "name": "IMAGE_BG6_TWILIGHT",
                 "type": "png"
             },
             {
@@ -43,19 +33,29 @@
                 "type": "png"
             },
             {
-                "file": "images/billboard_bg_color6_twilight.png",
-                "name": "IMAGE_BG6_TWILIGHT",
+                "file": "images/billboard_bg_color4_afternoon.png",
+                "name": "IMAGE_BG4_AFTERNOON",
                 "type": "png"
             },
             {
-                "file": "fonts/Lato-Bold.ttf",
-                "name": "FONT_LATO_38",
-                "type": "font"
+                "file": "images/billboard_bg_color3_midday.png",
+                "name": "IMAGE_BG3_MIDDAY",
+                "type": "png"
             },
             {
-                "file": "fonts/Lato-Bold.ttf",
-                "name": "FONT_LATO_14",
-                "type": "font"
+                "file": "images/billboard_bg_color2_sunrise.png",
+                "name": "IMAGE_BG2_SUNRISE",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color1_morningtwilight.png",
+                "name": "IMAGE_BG1_TWILIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color0_night.png",
+                "name": "IMAGE_BG0_NIGHT",
+                "type": "png"
             }
         ]
     },

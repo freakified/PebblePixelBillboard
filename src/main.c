@@ -1,6 +1,6 @@
 #include <pebble.h>
 #include "messaging.c"
-#include "dayparts.c"
+#include "day.c"
 
 #define FORCE_BACKLIGHT
 #define FORCE_12H true
@@ -30,8 +30,8 @@ static void update_clock() {
 
   time(&rawTime);
   timeInfo = localtime(&rawTime);
-  timeInfo->tm_hour = 12;
-  timeInfo->tm_min = 00;
+//   timeInfo->tm_hour = 0;
+//   timeInfo->tm_min = 0;
 
   // set time string
   if(clock_is_24h_style() && !FORCE_12H) {
@@ -73,11 +73,12 @@ static void update_clock() {
   text_layer_set_text(ampmLayer, ampmText);
   
   // display the date
-  strftime(dateText, DATE_STR_LEN, "%A, %b. %e", timeInfo);
+  strftime(dateText, DATE_STR_LEN, "%A, %b %e", timeInfo);
+  
   text_layer_set_text(dateLayer, dateText);
   
   // TEMP let's try putting in the BG switch here:
-  GBitmap* background = getCurrentBG(timeInfo);
+  GBitmap* background = day_getCurrentBG(timeInfo);
   bitmap_layer_set_bitmap(bgLayer, background);
 }
 
@@ -120,7 +121,7 @@ static void main_window_unload(Window *window) {
   fonts_unload_custom_font(timeFont);
   
   //Destroy GBitmap
-//   gbitmap_destroy(bgBitmap);
+  day_destruct();
 
   //Destroy BitmapLayer
   bitmap_layer_destroy(bgLayer);
@@ -140,7 +141,7 @@ static void init() {
   #endif
   
   // load background images
-  initDayparts();
+  day_init();
   
   // init the messaging thing
   messaging_init();
