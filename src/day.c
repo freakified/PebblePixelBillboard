@@ -1,6 +1,6 @@
 #include <pebble.h>
 #include "daypart.h"
-#include "dayparts.h"
+#include "day.h"
 
 /*
  * Check if a given time is contained within a specified daypart
