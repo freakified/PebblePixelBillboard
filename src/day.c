@@ -1,4 +1,6 @@
 #include <pebble.h>
+#include "location_info.h"
+#include "sun_calc.h"
 #include "daypart.c"
 #include "day.h"
 
@@ -15,7 +17,7 @@ static void day_init() {
 
   // next, ensure that the dayparts are set up (using default values)
   // don't worry, they'll be re-set as soon as we get the canonical sun data
-  day_setDaypartTimes(DEFAULT_SUNRISE_TIME, DEFAULT_SUNSET_TIME);
+  day_setSunriseSunset(DEFAULT_SUNRISE_TIME, DEFAULT_SUNSET_TIME);
 }
 
 static void day_destruct() {
@@ -45,7 +47,7 @@ static GBitmap* day_getCurrentBG(const struct tm* time) {
   return day_currentBackgroundBitmap;
 }
 
-static void day_setDaypartTimes(int sunriseMinute, int sunsetMinute) {
+static void day_setSunriseSunset(int sunriseMinute, int sunsetMinute) {
   // night 1
   day_dayparts[0].startMinute = 0;
   day_dayparts[0].endMinute   = sunriseMinute - TWILIGHT_DURATION;

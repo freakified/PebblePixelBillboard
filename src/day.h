@@ -22,8 +22,6 @@ Daypart day_dayparts[NUMBER_OF_DAYPARTS];
 uint32_t day_currentBackgroundID;
 GBitmap* day_currentBackgroundBitmap;
   
-// "public" functions
-
 /*
  * Sets up the set of 7 dayparts with their respective background images,
  * and times.
@@ -41,5 +39,10 @@ static void day_destruct();
  */
 static GBitmap* day_getCurrentBG(const struct tm* time);
 
-// "private" functions
-static void day_setDaypartTimes(int sunriseMinute, int sunsetMinute);
+static void day_setLocation(const LocationInfo* location);
+
+/*
+ * Sets the sunrise and sunset times, causing all dayparts' start/end
+ * times to be updated
+ */
+static void day_setSunriseSunset(int sunriseMinute, int sunsetMinute);
