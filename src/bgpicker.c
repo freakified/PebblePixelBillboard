@@ -5,6 +5,8 @@
 
 void bgpicker_init() {
   // first, load and set all the background images
+  // awkwardly force bw images in the case of a black and white watch
+  #ifdef PBL_COLOR
   bgpicker_dayparts[0].backgroundImageId = RESOURCE_ID_IMAGE_BG0_NIGHT;
   bgpicker_dayparts[1].backgroundImageId = RESOURCE_ID_IMAGE_BG1_TWILIGHT;
   bgpicker_dayparts[2].backgroundImageId = RESOURCE_ID_IMAGE_BG2_SUNRISE;
@@ -13,6 +15,16 @@ void bgpicker_init() {
   bgpicker_dayparts[5].backgroundImageId = RESOURCE_ID_IMAGE_BG5_SUNSET;
   bgpicker_dayparts[6].backgroundImageId = RESOURCE_ID_IMAGE_BG6_TWILIGHT;
   bgpicker_dayparts[7].backgroundImageId = RESOURCE_ID_IMAGE_BG0_NIGHT;
+  #else
+  bgpicker_dayparts[0].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG0_NIGHT;
+  bgpicker_dayparts[1].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG1_TRANSITION;
+  bgpicker_dayparts[2].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG1_TRANSITION;
+  bgpicker_dayparts[3].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG2_DAY;
+  bgpicker_dayparts[4].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG2_DAY;
+  bgpicker_dayparts[5].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG1_TRANSITION;
+  bgpicker_dayparts[6].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG1_TRANSITION;
+  bgpicker_dayparts[7].backgroundImageId = RESOURCE_ID_IMAGE_BW_BG0_NIGHT;
+  #endif
 
   
   // if we have a location set in persistent storage, use that

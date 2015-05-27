@@ -2,8 +2,8 @@
 #include "messaging.h"
 #include "bgpicker.h"
 
-#define FORCE_BACKLIGHT
-#define FORCE_12H true
+// #define FORCE_BACKLIGHT
+#define FORCE_12H false
 #define TIME_STR_LEN 6
 #define AMPM_STR_LEN 9
 #define DATE_STR_LEN 25
@@ -30,8 +30,6 @@ static void update_clock() {
 
   time(&rawTime);
   timeInfo = localtime(&rawTime);
-//   timeInfo->tm_hour = 19;
-//   timeInfo->tm_min = 59;
 
   // set time string
   if(clock_is_24h_style() && !FORCE_12H) {
@@ -40,6 +38,19 @@ static void update_clock() {
   } else {
     // use 12 hour format
     strftime(timeText, TIME_STR_LEN, "%I:%M", timeInfo);
+    
+    // display the am/pm state
+    if(timeInfo->tm_hour == 0 && timeInfo->tm_min == 0) {
+      strncpy(ampmText, "midnight", AMPM_STR_LEN);
+    } else if(timeInfo->tm_hour == 12 && timeInfo->tm_min == 0) {
+      strncpy(ampmText, "noon", AMPM_STR_LEN);
+    } else if(timeInfo->tm_hour < 12) {
+      strncpy(ampmText, "am", AMPM_STR_LEN);
+    } else {
+      strncpy(ampmText, "pm", AMPM_STR_LEN);
+    }
+
+    text_layer_set_text(ampmLayer, ampmText);
   }
     
   //now trim leading 0's
@@ -59,18 +70,7 @@ static void update_clock() {
   // display this time on the TextLayer
   text_layer_set_text(timeLayer, timeText);
   
-  // display the am/pm state
-  if(timeInfo->tm_hour == 0 && timeInfo->tm_min == 0) {
-    strncpy(ampmText, "midnight", AMPM_STR_LEN);
-  } else if(timeInfo->tm_hour == 12 && timeInfo->tm_min == 0) {
-    strncpy(ampmText, "noon", AMPM_STR_LEN);
-  } else if(timeInfo->tm_hour < 12) {
-    strncpy(ampmText, "am", AMPM_STR_LEN);
-  } else {
-    strncpy(ampmText, "pm", AMPM_STR_LEN);
-  }
-  
-  text_layer_set_text(ampmLayer, ampmText);
+
   
   // display the date
   strftime(dateText, DATE_STR_LEN, "%A, %b %e", timeInfo);
@@ -100,7 +100,13 @@ static void main_window_load(Window *window) {
   // Create date TextLayer
   dateLayer = text_layer_create(GRect(18, 22, 130, 20));
   text_layer_set_background_color(dateLayer, GColorClear);
+  
+  #ifdef PBL_COLOR
   text_layer_set_text_color(dateLayer, GColorDarkGray);
+  #else
+  text_layer_set_text_color(dateLayer, GColorBlack);
+  #endif
+    
   text_layer_set_font(dateLayer, dateFont);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(dateLayer));
   

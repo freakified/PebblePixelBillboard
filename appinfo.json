@@ -13,84 +13,15 @@
     "resources": {
         "media": [
             {
-                "file": "images/billboard_bg_color0_night.png",
-                "name": "IMAGE_BG0_NIGHT",
-                "type": "png",
-                "targetPlatforms": [
-                  "basalt"
-                ]
+                "file": "images/menu_icon_pixel_billboard.png",
+                "menuIcon": true,
+                "name": "IMAGE_MENU_ICON",
+                "type": "png"
             },
             {
-                "file": "images/billboard_bg_color1_morningtwilight.png",
-                "name": "IMAGE_BG1_TWILIGHT",
-                "type": "png",
-                "targetPlatforms": [
-                  "basalt"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_color2_sunrise.png",
-                "name": "IMAGE_BG2_SUNRISE",
-                "type": "png",
-                "targetPlatforms": [
-                  "basalt"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_color3_midday.png",
-                "name": "IMAGE_BG3_MIDDAY",
-                "type": "png",
-                "targetPlatforms": [
-                  "basalt"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_color4_afternoon.png",
-                "name": "IMAGE_BG4_AFTERNOON",
-                "type": "png",
-                "targetPlatforms": [
-                  "basalt"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_color5_sunset.png",
-                "name": "IMAGE_BG5_SUNSET",
-                "type": "png",
-                "targetPlatforms": [
-                  "basalt"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_color6_twilight.png",
-                "name": "IMAGE_BG6_TWILIGHT",
-                "type": "png",
-                "targetPlatforms": [
-                  "basalt"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_bw0_night.png",
-                "name": "IMAGE_BW_BG0_NIGHT",
-                "type": "png",
-                "targetPlatforms": [
-                  "aplite"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_bw1_transition.png",
-                "name": "IMAGE_BW_BG1_TRANSITION",
-                "type": "png",
-                "targetPlatforms": [
-                  "aplite"
-                ]
-            },
-            {
-                "file": "images/billboard_bg_bw2_day.png",
-                "name": "IMAGE_BW_BG2_DAY",
-                "type": "png",
-                "targetPlatforms": [
-                  "aplite"
-                ]
+                "file": "fonts/Lato-Bold.ttf",
+                "name": "FONT_LATO_14",
+                "type": "font"
             },
             {
                 "file": "fonts/Lato-Bold.ttf",
@@ -98,17 +29,62 @@
                 "type": "font"
             },
             {
-                "file": "fonts/Lato-Bold.ttf",
-                "name": "FONT_LATO_14",
-                "type": "font"
+                "file": "images/billboard_bg_bw2_day.png",
+                "name": "IMAGE_BW_BG2_DAY",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_bw1_transition.png",
+                "name": "IMAGE_BW_BG1_TRANSITION",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_bw0_night.png",
+                "name": "IMAGE_BW_BG0_NIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color6_twilight.png",
+                "name": "IMAGE_BG6_TWILIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color5_sunset.png",
+                "name": "IMAGE_BG5_SUNSET",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color4_afternoon.png",
+                "name": "IMAGE_BG4_AFTERNOON",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color3_midday.png",
+                "name": "IMAGE_BG3_MIDDAY",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color2_sunrise.png",
+                "name": "IMAGE_BG2_SUNRISE",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color1_morningtwilight.png",
+                "name": "IMAGE_BG1_TWILIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/billboard_bg_color0_night.png",
+                "name": "IMAGE_BG0_NIGHT",
+                "type": "png"
             }
         ]
     },
     "sdkVersion": "3",
     "shortName": "Pixel Billboard",
     "targetPlatforms": [
-        "basalt",
-        "aplite"
+        "aplite",
+        "basalt"
     ],
     "uuid": "0aeb60a0-056f-4cdd-810e-4d7aa4c0e7e3",
     "versionLabel": "1.0",
