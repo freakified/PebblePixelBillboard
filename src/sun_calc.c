@@ -96,3 +96,18 @@ float calcSunRise(int year, int month, int day, float latitude, float longitude,
 float calcSunSet(int year, int month, int day, float latitude, float longitude, float zenith) {
   return calcSun(year, month, day, latitude, longitude, 1, zenith);
 }
+
+float adjustTimezone(float time, float tzOffset) {
+  float newTime = time;
+
+  if (time != NO_RISE_SET_TIME) {
+    newTime += tzOffset + 12; 
+    if (newTime > 24) {
+      newTime -= 24;
+    } else if (newTime < 0) {
+      newTime += 24;
+    }
+  }
+  
+  return newTime;
+} 

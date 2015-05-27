@@ -5,16 +5,16 @@ function locationError(err) {
 function locationSuccess(pos) {
   console.log('location accquired on the JS side!');
   // now that we have the location, get the timezone offset 
-  // so we can send that, too. example code is from:
-  // http://developer.getpebble.com/blog/2013/12/20/Pebble-Javascript-Tips-and-Tricks/
-  var offsetMinutes = new Date().getTimezoneOffset() * 60;
+  var tzOffset = new Date().getTimezoneOffset() * -1;
   
   // collect everything to send
   var message = {
-        'KEY_LOCATION_LAT': pos.coords.latitude,
-        'KEY_LOCATION_LNG': pos.coords.longitude,
-        'KEY_GMT_OFFSET': offsetMinutes
+        'KEY_LOCATION_LAT': Math.round(pos.coords.latitude * 1000000),
+        'KEY_LOCATION_LNG': Math.round(pos.coords.longitude * 1000000),
+        'KEY_GMT_OFFSET': tzOffset
       };
+  
+  console.log(message.KEY_LOCATION_LAT);
   
   // send the message to the watch
   Pebble.sendAppMessage(message,

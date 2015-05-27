@@ -3,8 +3,5 @@
 typedef struct {
   float lat;
   float lng;
-  int tzOffset;
+  float tzOffset;
 } LocationInfo;
-
-static LocationInfo location;
-static bool locationInfoRecieved = false;

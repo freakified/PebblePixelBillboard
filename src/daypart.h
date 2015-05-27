@@ -1,4 +1,6 @@
 #pragma once
+  
+#include <pebble.h>
 
 /*
  * Represents a part of the day. The bounds are determined
@@ -14,4 +16,4 @@ typedef struct {
 /*
  * Check if a given time is contained within a specified daypart
  */
-static bool daypart_containsTime(const Daypart* this, int minute);
+bool daypart_containsTime(const Daypart* this, int minute);

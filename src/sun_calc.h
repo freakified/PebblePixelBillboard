@@ -29,3 +29,8 @@
 
 float calcSunRise(int year, int month, int day, float latitude, float longitude, float zenith);
 float calcSunSet(int year, int month, int day, float latitude, float longitude, float zenith);
+
+/**
+ *  Adjust UTC hour + fraction to same in local time.
+ */
+float adjustTimezone(float time, float tzOffset);

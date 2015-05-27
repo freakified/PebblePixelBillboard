@@ -1,6 +1,6 @@
 #include <pebble.h>
-#include "messaging.c"
-#include "day.c"
+#include "messaging.h"
+#include "bgpicker.h"
 
 #define FORCE_BACKLIGHT
 #define FORCE_12H true
@@ -9,11 +9,11 @@
 #define DATE_STR_LEN 25
 
 // windows and layers
-static Window *mainWindow;
-static TextLayer *timeLayer;
-static TextLayer *dateLayer;
-static TextLayer *ampmLayer;
-static BitmapLayer *bgLayer;
+static Window* mainWindow;
+static TextLayer* timeLayer;
+static TextLayer* dateLayer;
+static TextLayer* ampmLayer;
+static BitmapLayer* bgLayer;
 
 // fonts
 static GFont timeFont;
@@ -26,12 +26,12 @@ static char dateText[DATE_STR_LEN];
 
 static void update_clock() {
   time_t rawTime;
-  struct tm * timeInfo;
+  struct tm* timeInfo;
 
   time(&rawTime);
   timeInfo = localtime(&rawTime);
-//   timeInfo->tm_hour = 0;
-//   timeInfo->tm_min = 0;
+//   timeInfo->tm_hour = 19;
+//   timeInfo->tm_min = 59;
 
   // set time string
   if(clock_is_24h_style() && !FORCE_12H) {
@@ -77,9 +77,8 @@ static void update_clock() {
   
   text_layer_set_text(dateLayer, dateText);
   
-  // TEMP let's try putting in the BG switch here:
-  GBitmap* background = day_getCurrentBG(timeInfo);
-  bitmap_layer_set_bitmap(bgLayer, background);
+  // forces the the background image to update, reflecting changes immediately
+  bitmap_layer_set_bitmap(bgLayer, bgpicker_getCurrentBG(timeInfo));
 }
 
 static void main_window_load(Window *window) {
@@ -121,7 +120,7 @@ static void main_window_unload(Window *window) {
   fonts_unload_custom_font(timeFont);
   
   //Destroy GBitmap
-  day_destruct();
+  bgpicker_destruct();
 
   //Destroy BitmapLayer
   bitmap_layer_destroy(bgLayer);
@@ -141,7 +140,7 @@ static void init() {
   #endif
   
   // load background images
-  day_init();
+  bgpicker_init();
   
   // init the messaging thing
   messaging_init();
