@@ -70,7 +70,7 @@
             },
             {
                 "file": "images/billboard_bg_bw0_night.png",
-                "name": "IMAGE_BG0_NIGHT",
+                "name": "IMAGE_BW_BG0_NIGHT",
                 "type": "png",
                 "targetPlatforms": [
                   "aplite"
@@ -78,7 +78,7 @@
             },
             {
                 "file": "images/billboard_bg_bw1_transition.png",
-                "name": "IMAGE_BG1_TRANSITION",
+                "name": "IMAGE_BW_BG1_TRANSITION",
                 "type": "png",
                 "targetPlatforms": [
                   "aplite"
@@ -86,7 +86,7 @@
             },
             {
                 "file": "images/billboard_bg_bw2_day.png",
-                "name": "IMAGE_BG2_DAY",
+                "name": "IMAGE_BW_BG2_DAY",
                 "type": "png",
                 "targetPlatforms": [
                   "aplite"
