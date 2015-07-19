@@ -22,7 +22,7 @@ static GFont dateFont;
 // long-lived strings
 static char timeText[TIME_STR_LEN];
 static char ampmText[AMPM_STR_LEN];
-static char dateText[DATE_STR_LEN]; 
+static char dateText[DATE_STR_LEN];
 
 static void update_clock() {
   time_t rawTime;
@@ -38,7 +38,7 @@ static void update_clock() {
   } else {
     // use 12 hour format
     strftime(timeText, TIME_STR_LEN, "%I:%M", timeInfo);
-    
+
     // display the am/pm state
     if(timeInfo->tm_hour == 0 && timeInfo->tm_min == 0) {
       strncpy(ampmText, "midnight", AMPM_STR_LEN);
@@ -52,14 +52,14 @@ static void update_clock() {
 
     text_layer_set_text(ampmLayer, ampmText);
   }
-    
+
   //now trim leading 0's
   if(timeText[0] == '0') {
     //shuffle everyone back by 1
     for(int i = 0; i < TIME_STR_LEN; i++) {
       timeText[i] = timeText[i + 1];
     }
-        
+
     // move the ampm layer to adjust for the smaller text
     layer_set_frame(text_layer_get_layer(ampmLayer), GRect(96, 58, 70, 20));
   } else {
@@ -69,54 +69,59 @@ static void update_clock() {
 
   // display this time on the TextLayer
   text_layer_set_text(timeLayer, timeText);
-  
 
-  
   // display the date
   strftime(dateText, DATE_STR_LEN, "%A, %b %e", timeInfo);
-  
+
   text_layer_set_text(dateLayer, dateText);
-  
+
   // forces the the background image to update, reflecting changes immediately
   bitmap_layer_set_bitmap(bgLayer, bgpicker_getCurrentBG(timeInfo));
+
+  if(timeInfo->tm_hour == 0 && timeInfo->tm_min == 0) {
+    bgpicker_updateLocation(bgpicker_location);
+  }
 }
 
 static void main_window_load(Window *window) {
   //Create GBitmap, then set to created BitmapLayer
   bgLayer = bitmap_layer_create(GRect(0, 0, 144, 168));
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(bgLayer));
-  
+
   // create fonts
   timeFont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LATO_38));
   dateFont = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LATO_14));
-  
+
   // Create time TextLayer
   timeLayer = text_layer_create(GRect(18, 34, 130, 50));
   text_layer_set_background_color(timeLayer, GColorClear);
   text_layer_set_text_color(timeLayer, GColorBlack);
   text_layer_set_font(timeLayer, timeFont);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(timeLayer));
-  
+
   // Create date TextLayer
   dateLayer = text_layer_create(GRect(18, 22, 130, 20));
   text_layer_set_background_color(dateLayer, GColorClear);
-  
+
   #ifdef PBL_COLOR
   text_layer_set_text_color(dateLayer, GColorDarkGray);
   #else
   text_layer_set_text_color(dateLayer, GColorBlack);
   #endif
-    
+
   text_layer_set_font(dateLayer, dateFont);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(dateLayer));
-  
+
   // Create ampm TextLayer
   ampmLayer = text_layer_create(GRect(96, 57, 60, 20));
   text_layer_set_background_color(ampmLayer, GColorClear);
   text_layer_set_text_color(ampmLayer, GColorBlack);
   text_layer_set_font(ampmLayer, dateFont);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(ampmLayer));
-  
+
+  // recalculate the sunrise/sunset times
+  bgpicker_updateLocation(bgpicker_location);
+
   // Make sure the time is displayed from the start
   update_clock();
 }
@@ -124,13 +129,13 @@ static void main_window_load(Window *window) {
 static void main_window_unload(Window *window) {
   //Unload GFont
   fonts_unload_custom_font(timeFont);
-  
+
   //Destroy GBitmap
   bgpicker_destruct();
 
   //Destroy BitmapLayer
   bitmap_layer_destroy(bgLayer);
-  
+
   // Destroy TextLayer
   text_layer_destroy(timeLayer);
 }
@@ -139,18 +144,18 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_clock();
 }
 
-  
+
 static void init() {
   #ifdef FORCE_BACKLIGHT
   light_enable(true);
   #endif
-  
+
   // load background images
   bgpicker_init();
-  
+
   // init the messaging thing
   messaging_init();
-  
+
   // Create main Window element and assign to pointer
   mainWindow = window_create();
 
@@ -162,7 +167,7 @@ static void init() {
 
   // Show the Window on the watch, with animated=true
   window_stack_push(mainWindow, true);
-  
+
   // Register with TickTimerService
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 }

@@ -5,7 +5,7 @@
  * Based on sunrise and sunset times, splits the day into several "day parts",
  * each of which is associated with a background image.
  */
-  
+
 #include "daypart.h"
 #include "location_info.h"
 
@@ -21,7 +21,7 @@
 // default sunrise at 6:00am, default sunset at 6:00pm:
 #define DEFAULT_SUNRISE_TIME 360
 #define DEFAULT_SUNSET_TIME 1080
-  
+
 // persistent storage
 #define BGPICKER_LOC_KEY 1
 
