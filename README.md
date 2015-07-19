@@ -1,6 +1,6 @@
 # Pixel Billboard
 
-<img src="project_banner.png">
+<img src="project_banner.png" style="border: 2px solid black">
 
 A watchface for Pebble and Pebble Time featuring adorable graphics -- watch the day pass by on the Pixel Billboard!
 
